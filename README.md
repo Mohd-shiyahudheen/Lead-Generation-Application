@@ -6,6 +6,18 @@ An explainable lead intelligence and prioritization layer built for acquisition 
 
 ---
 
+## 📦 Submission Deliverables
+
+| Deliverable | Status | Resource / Link |
+|---|---|---|
+| **1. GitHub Repository** | ✅ Complete | [github.com/Mohd-shiyahudheen/Lead-Generation-Application](https://github.com/Mohd-shiyahudheen/Lead-Generation-Application) |
+| **2. Setup & Docs** | ✅ Complete | See [Getting Started](#-getting-started) & [Architecture](docs/ARCHITECTURE.md) |
+| **3. Exported Dataset** | ✅ Included | [`saasquatch_leads_tier_all_export.csv`](./saasquatch_leads_tier_all_export.csv) |
+| **4. Interactive Demo** | ✅ Included | [Jupyter Notebook Walkthrough (`demo_walkthrough.ipynb`)](./demo_walkthrough.ipynb) |
+| **5. Video Walkthrough** | 🎥 Ready | *[Insert Loom / YouTube / Drive Link Here]* |
+
+---
+
 ## 🎯 The Core Problem & Strategic Product Decision
 
 ### Reference Product Analysis: [SaaSquatch Leads](https://www.saasquatchleads.com/)
