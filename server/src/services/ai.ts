@@ -106,7 +106,13 @@ export async function generateExplanation(
 
     if (!response.ok) throw new Error(`AI API returned ${response.status}`);
 
-    const data = await response.json();
+    const data = (await response.json()) as {
+      choices?: Array<{
+        message?: {
+          content?: string;
+        };
+      }>;
+    };
     const aiExplanation = data.choices?.[0]?.message?.content;
 
     if (!aiExplanation) throw new Error('No AI response content');
