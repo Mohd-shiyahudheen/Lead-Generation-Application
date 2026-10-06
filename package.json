@@ -1,0 +1,24 @@
+{
+  "name": "saasquatch-signal",
+  "version": "1.0.0",
+  "description": "SaaSquatch Signal — Explainable Lead Intelligence & Prioritization Layer",
+  "private": true,
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "dev": "node -e \"const { spawn } = require('child_process'); console.log('Starting SaaSquatch Signal Server & Client...'); spawn('npm', ['--prefix', 'server', 'run', 'dev'], { stdio: 'inherit', shell: true }); spawn('npm', ['--prefix', 'client', 'run', 'dev'], { stdio: 'inherit', shell: true });\"",
+    "build": "npm --prefix server run build && npm --prefix client run build",
+    "test": "npm --prefix server test",
+    "seed": "npm --prefix server run seed"
+  },
+  "keywords": [
+    "lead-scoring",
+    "lead-intelligence",
+    "acquisition-search",
+    "icp",
+    "saasquatch"
+  ],
+  "author": "Caprae Capital Lead Product Engineer",
+  "license": "ISC"
+}
