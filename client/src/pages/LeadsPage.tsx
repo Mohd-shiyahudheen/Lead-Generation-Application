@@ -12,6 +12,7 @@ import {
   ChevronLeft,
   ChevronRight,
   TrendingUp,
+  Download,
 } from 'lucide-react';
 
 export const LeadsPage: React.FC = () => {
@@ -68,6 +69,50 @@ export const LeadsPage: React.FC = () => {
     { label: 'Tier D (Low)', value: 'D' },
   ];
 
+  const handleExportCSV = () => {
+    if (!data?.data || data.data.length === 0) return;
+
+    const headers = [
+      'Company Name',
+      'Priority Tier',
+      'Score',
+      'Industry',
+      'Revenue',
+      'Employees',
+      'Location',
+      'Decision Maker',
+      'Title',
+      'Email',
+      'Key Score Reasons',
+    ];
+
+    const rows = data.data.map((lead) => [
+      `"${lead.companyName.replace(/"/g, '""')}"`,
+      `"${lead.priority}"`,
+      lead.score,
+      `"${(lead.industry || '').replace(/"/g, '""')}"`,
+      lead.revenue ?? '',
+      lead.employees ?? '',
+      `"${(lead.location || '').replace(/"/g, '""')}"`,
+      `"${(lead.contact?.name || '').replace(/"/g, '""')}"`,
+      `"${(lead.contact?.title || '').replace(/"/g, '""')}"`,
+      `"${(lead.contact?.email || '').replace(/"/g, '""')}"`,
+      `"${(lead.scoreReasons?.join('; ') || '').replace(/"/g, '""')}"`,
+    ]);
+
+    const csvContent =
+      'data:text/csv;charset=utf-8,' +
+      [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `saasquatch_leads_tier_${priorityFilter || 'all'}_export.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Page Title & Controls */}
@@ -78,6 +123,15 @@ export const LeadsPage: React.FC = () => {
             Ranked and categorized according to the multi-factor explainable scoring engine
           </p>
         </div>
+        <button
+          onClick={handleExportCSV}
+          disabled={!data?.data || data.data.length === 0}
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700/80 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed self-start sm:self-auto"
+          title="Export displayed leads to CSV"
+        >
+          <Download className="w-3.5 h-3.5 text-brand-400" />
+          <span>Export CSV</span>
+        </button>
       </div>
 
       {/* Filter and Search Bar */}
