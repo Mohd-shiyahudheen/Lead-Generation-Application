@@ -45,6 +45,10 @@ export const ICPPage: React.FC = () => {
   const [customLocation, setCustomLocation] = useState('');
   const [savedSuccess, setSavedSuccess] = useState(false);
 
+  const customIndustries = industries.filter(
+    (ind) => !COMMON_INDUSTRIES.some((c) => c.toLowerCase() === ind.toLowerCase())
+  );
+
   useEffect(() => {
     if (data?.icp) {
       setName(data.icp.name);
@@ -67,18 +71,44 @@ export const ICPPage: React.FC = () => {
   });
 
   const toggleIndustry = (ind: string) => {
-    if (industries.includes(ind)) {
-      setIndustries(industries.filter((i) => i !== ind));
+    const isSelected = industries.some((i) => i.toLowerCase() === ind.toLowerCase());
+    if (isSelected) {
+      setIndustries(industries.filter((i) => i.toLowerCase() !== ind.toLowerCase()));
     } else {
       setIndustries([...industries, ind]);
     }
   };
 
+  const removeIndustry = (ind: string) => {
+    setIndustries(industries.filter((i) => i.toLowerCase() !== ind.toLowerCase()));
+  };
+
   const addCustomIndustry = () => {
-    if (customIndustry.trim() && !industries.includes(customIndustry.trim())) {
-      setIndustries([...industries, customIndustry.trim()]);
-      setCustomIndustry('');
-    }
+    const trimmed = customIndustry.trim();
+    if (!trimmed) return;
+
+    const items = trimmed
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+    let nextIndustries = [...industries];
+
+    items.forEach((item) => {
+      const alreadyPresent = nextIndustries.some(
+        (i) => i.toLowerCase() === item.toLowerCase()
+      );
+      if (alreadyPresent) return;
+
+      const presetMatch = COMMON_INDUSTRIES.find(
+        (c) => c.toLowerCase() === item.toLowerCase()
+      );
+
+      nextIndustries.push(presetMatch || item);
+    });
+
+    setIndustries(nextIndustries);
+    setCustomIndustry('');
   };
 
   const addCustomLocation = () => {
@@ -176,7 +206,9 @@ export const ICPPage: React.FC = () => {
 
           <div className="flex flex-wrap gap-2 pt-2">
             {COMMON_INDUSTRIES.map((ind) => {
-              const isSelected = industries.includes(ind);
+              const isSelected = industries.some(
+                (i) => i.toLowerCase() === ind.toLowerCase()
+              );
               return (
                 <button
                   key={ind}
@@ -193,6 +225,26 @@ export const ICPPage: React.FC = () => {
                 </button>
               );
             })}
+
+            {/* Custom Added Industries */}
+            {customIndustries.map((ind) => (
+              <span
+                key={ind}
+                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-brand-500 text-white shadow-md shadow-brand-500/25 border border-brand-400 flex items-center gap-2 animate-in fade-in"
+              >
+                <Check className="w-3.5 h-3.5" />
+                <span>{ind}</span>
+                <button
+                  type="button"
+                  onClick={() => removeIndustry(ind)}
+                  className="hover:text-rose-200 ml-0.5 p-0.5 rounded hover:bg-brand-600/60 transition-colors"
+                  title={`Remove ${ind}`}
+                  aria-label={`Remove ${ind}`}
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </span>
+            ))}
           </div>
 
           {/* Add custom industry input */}
@@ -201,8 +253,8 @@ export const ICPPage: React.FC = () => {
               type="text"
               value={customIndustry}
               onChange={(e) => setCustomIndustry(e.target.value)}
-              placeholder="Add another industry..."
-              className="flex-1 py-1.5 px-3 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-200 focus:outline-none focus:border-brand-500"
+              placeholder="Add custom industry (e.g. AI / ML, Biotech)..."
+              className="flex-1 py-1.5 px-3 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-200 focus:outline-none focus:border-brand-500 placeholder:text-slate-500"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
@@ -213,7 +265,7 @@ export const ICPPage: React.FC = () => {
             <button
               type="button"
               onClick={addCustomIndustry}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1 active:scale-95 transition-all"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add</span>
